@@ -215,6 +215,7 @@
 </div>
 
 <script>
+
 function calculateRack() {
     const heightFt = parseFloat(document.getElementById('calc-height').value);
     const lengthFt = parseFloat(document.getElementById('calc-length').value);
@@ -228,10 +229,9 @@ function calculateRack() {
     // 1. Bottom Gap & Net Clearance Calculation
     const totalHeightInches = heightFt * 12;
     const bottomGapInches = hasBottomGap ? 3 : 0;
-    const shelfThicknessInches = 1; // 1 inch thickness per shelf panel
+    const shelfThicknessInches = 1; 
     const totalPanelThickness = numShelves * shelfThicknessInches;
     
-    // Usable height after deducting bottom rust clearance and shelf panel thicknesses
     const usableHeight = totalHeightInches - bottomGapInches - totalPanelThickness;
     const gapsCount = numShelves > 1 ? numShelves - 1 : 1;
     const netGapInches = (usableHeight / gapsCount).toFixed(2);
@@ -240,7 +240,7 @@ function calculateRack() {
     document.getElementById('out-bottom').innerText = hasBottomGap ? `3.0" (7.6 cm) Anti-Rust Gap` : `None (0")`;
     document.getElementById('out-levels').innerText = `${numShelves} Shelves + 1 Floor Level (${numShelves + 1} Total)`;
 
-    // 2. Load Capacity Calibration (15" Depth Baseline Adjustment)
+    // 2. Load Capacity Calibration
     const baseCapacities = {
         0.50: 40,
         0.60: 70,
@@ -267,26 +267,28 @@ function calculateRack() {
 
     document.getElementById('out-weight').innerText = `${totalWeightPerSet} kg / set`;
 
-    // 4. Pricing Formula
+    // 4. Exact Pricing Formula (Calibrated to Min Base Price = NPR 6,000 with Business Margin)
     const rawMaterialRatePerKg = 125; 
     const baseSteelCost = totalWeightPerSet * rawMaterialRatePerKg;
-    const nutBoltsCornerBracesCost = numShelves * 140; 
-    const powderCoatingLaborCost = totalWeightPerSet * 35;
+    const nutBoltsCornerBracesCost = numShelves * 180; 
+    const powderCoatingLaborCost = totalWeightPerSet * 45;
+    const factoryOverheadAndProfitMargin = 1850; // Profit & overhead margin
 
-    let costPerSet = baseSteelCost + nutBoltsCornerBracesCost + powderCoatingLaborCost;
+    let costPerSet = baseSteelCost + nutBoltsCornerBracesCost + powderCoatingLaborCost + factoryOverheadAndProfitMargin;
     
-    if(heightFt === 6.5) {
-        costPerSet += 100; 
+    // Scale adjustment for height
+    if(heightFt > 6.5) {
+        costPerSet += (heightFt - 6.5) * 250; 
     }
 
     let totalCost = costPerSet * qty;
 
     const discountBanner = document.getElementById('discount-banner');
     if(qty >= 10) {
-        totalCost *= 0.92; 
+        totalCost *= 0.94; // 6% Discount for bulk
         discountBanner.classList.remove('hidden');
     } else if(qty >= 5) {
-        totalCost *= 0.95; 
+        totalCost *= 0.97; // 3% Discount
         discountBanner.classList.remove('hidden');
     } else {
         discountBanner.classList.add('hidden');

@@ -215,7 +215,6 @@
 </div>
 
 <script>
-
 function calculateRack() {
     const heightFt = parseFloat(document.getElementById('calc-height').value);
     const lengthFt = parseFloat(document.getElementById('calc-length').value);
@@ -255,40 +254,59 @@ function calculateRack() {
     const adjustedLoad = Math.round(baseLoad * depthFactor);
     document.getElementById('out-load').innerText = `${adjustedLoad} kg / shelf`;
 
-    // 3. Weight Estimation Calculation (Raw Steel Weight in Kg)
+    // 3. Exact Sheet Cut Size with 4" Folding Allowance (e.g., 12" finished shelf needs 16" raw cut)
     const totalAngleFt = 4 * heightFt; 
     const angleWeightPerFt = (angleMm / 2.0) * 0.75; 
     const totalAngleWeight = totalAngleFt * angleWeightPerFt;
 
-    const shelfAreaSqFt = (lengthFt * (depthInches / 12));
+    // Raw cut depth = Finished depth + 4 inches for folding/bending flanges
+    const rawCutDepthInches = depthInches + 4; 
+
+    // Nesting efficiency from 48"x96" sheet
+    let nestingEfficiency = 1.35; 
+    if (depthInches === 12) {
+        nestingEfficiency = 1.22; // Optimized yield for 16" cut strip from 48" sheet width
+    } else if (depthInches === 18) {
+        nestingEfficiency = 1.45; 
+    } else if (depthInches >= 24) {
+        nestingEfficiency = 1.55; 
+    }
+
+    const shelfAreaSqFt = (lengthFt * (rawCutDepthInches / 12));
     const sheetWeightPerSqFt = sheetMm * 7.85 * 0.0929; 
-    const totalSheetWeight = numShelves * shelfAreaSqFt * sheetWeightPerSqFt * 1.35; 
+    const totalSheetWeight = numShelves * shelfAreaSqFt * sheetWeightPerSqFt * nestingEfficiency; 
     const totalWeightPerSet = (totalAngleWeight + totalSheetWeight).toFixed(1);
 
     document.getElementById('out-weight').innerText = `${totalWeightPerSet} kg / set`;
 
-    // 4. Exact Pricing Formula (Calibrated to Min Base Price = NPR 6,000 with Business Margin)
+    // 4. Accurate Factory Cost & Protected Profit Margin
     const rawMaterialRatePerKg = 125; 
     const baseSteelCost = totalWeightPerSet * rawMaterialRatePerKg;
-    const nutBoltsCornerBracesCost = numShelves * 180; 
-    const powderCoatingLaborCost = totalWeightPerSet * 45;
-    const factoryOverheadAndProfitMargin = 1850; // Profit & overhead margin
+    const hardwareCost = numShelves * 140; 
+    const coatingLaborCost = totalWeightPerSet * 35;
+    const factoryNetMargin = 1650; // Guaranteed safe profit margin
 
-    let costPerSet = baseSteelCost + nutBoltsCornerBracesCost + powderCoatingLaborCost + factoryOverheadAndProfitMargin;
+    let costPerSet = baseSteelCost + hardwareCost + coatingLaborCost + factoryNetMargin;
     
-    // Scale adjustment for height
+    // Height scaling
     if(heightFt > 6.5) {
-        costPerSet += (heightFt - 6.5) * 250; 
+        costPerSet += (heightFt - 6.5) * 280; 
+    }
+
+    // Proportional adjustment based on actual folding cut size
+    if(depthInches === 12) {
+        costPerSet *= 0.93; // Automatically cheaper than 15" due to 16" vs 19" raw cut optimization
     }
 
     let totalCost = costPerSet * qty;
 
+    // Bulk Discount
     const discountBanner = document.getElementById('discount-banner');
     if(qty >= 10) {
-        totalCost *= 0.94; // 6% Discount for bulk
+        totalCost *= 0.94; 
         discountBanner.classList.remove('hidden');
     } else if(qty >= 5) {
-        totalCost *= 0.97; // 3% Discount
+        totalCost *= 0.97; 
         discountBanner.classList.remove('hidden');
     } else {
         discountBanner.classList.add('hidden');

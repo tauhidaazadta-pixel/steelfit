@@ -77,7 +77,233 @@
             </div>
         </div>
     </section>
+<!-- SteelFit Infrastructure - Precision Slotted Angle Rack & Load Calculator -->
+<div id="steelfit-calculator" class="bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto my-8 border border-slate-700">
+    <div class="text-center mb-6">
+        <span class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">Factory Direct Calculator</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-amber-400 mt-2">SteelFit Rack Cost & Load Estimator</h2>
+        <p class="text-xs md:text-sm text-slate-400">A Unit of Azad Metal Engineering Pvt. Ltd. | Balkhu Chowk, Kathmandu</p>
+    </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Controls Left -->
+        <div class="space-y-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
+            <div>
+                <label class="block text-xs text-slate-300 font-semibold mb-1">Rack Height (ऊंचाई):</label>
+                <select id="calc-height" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-sm text-amber-300 focus:outline-none focus:border-amber-400">
+                    <option value="6">6 Feet (72")</option>
+                    <option value="6.5" selected>6.5 Feet (78") - Std 1.5"x1.5"</option>
+                    <option value="8">8 Feet (96")</option>
+                    <option value="10">10 Feet (120")</option>
+                    <option value="12">12 Feet (144")</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs text-slate-300 font-semibold mb-1">Length (लंबाई):</label>
+                    <select id="calc-length" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none">
+                        <option value="3" selected>3 Feet (36")</option>
+                        <option value="3.75">45 Inches (3.75 ft)</option>
+                        <option value="6">6 Feet (72")</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-300 font-semibold mb-1">Depth (चौड़ाई):</label>
+                    <select id="calc-depth" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none">
+                        <option value="12">12 Inches (1 ft)</option>
+                        <option value="15" selected>15 Inches (1.25 ft)</option>
+                        <option value="18">18 Inches (1.5 ft)</option>
+                        <option value="24">24 Inches (2 ft)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-300 font-semibold mb-1">Angle Thickness (एंगल मोटाई):</label>
+                <select id="calc-angle" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-amber-300 focus:outline-none">
+                    <option value="1.6">Light Duty (1.6 mm)</option>
+                    <option value="1.8">Medium Duty (1.8 mm)</option>
+                    <option value="2.0" selected>Heavy Duty (2.0 mm)</option>
+                    <option value="2.5">Extra Heavy Duty (2.5 mm)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs text-slate-300 font-semibold mb-1">Sheet Thickness (पैनल मोटाई):</label>
+                <select id="calc-sheet" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white focus:outline-none">
+                    <option value="0.50">0.50 mm (Eco)</option>
+                    <option value="0.60">0.60 mm (Light)</option>
+                    <option value="0.70">0.70 mm (Std)</option>
+                    <option value="0.80" selected>0.80 mm (Medium)</option>
+                    <option value="0.90">0.90 mm (Heavy)</option>
+                    <option value="1.00">1.00 mm (Extra Heavy)</option>
+                    <option value="1.20">1.20 mm (Super Heavy)</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs text-slate-300 font-semibold mb-1">Number of Shelves:</label>
+                    <input id="calc-shelves" type="number" min="2" max="10" value="5" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-center text-amber-400 font-bold focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-300 font-semibold mb-1">Quantity (Sets):</label>
+                    <input id="calc-qty" type="number" min="1" max="100" value="1" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-center text-white font-bold focus:outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Display Right -->
+        <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-slate-300 border-b border-slate-700 pb-2 mb-3">Calculated Specifications & Clearance</h3>
+                
+                <div class="space-y-3 text-xs md:text-sm">
+                    <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Net Gap between Shelves:</span>
+                        <span id="out-gap" class="font-bold text-amber-400">13.25 Inches / Gap</span>
+                    </div>
+
+                    <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Load Capacity per Shelf:</span>
+                        <span id="out-load" class="font-bold text-emerald-400">120 kg / shelf</span>
+                    </div>
+
+                    <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Approx. Steel Weight:</span>
+                        <span id="out-weight" class="font-bold text-slate-200">32.5 kg / set</span>
+                    </div>
+
+                    <div id="discount-banner" class="hidden text-center bg-emerald-900/50 text-emerald-300 text-xs py-1.5 rounded-lg border border-emerald-700/50">
+                        🎉 Bulk Order Discount Applied!
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-700 text-center">
+                <span class="text-xs text-slate-400 uppercase tracking-wider">Estimated Factory Cost</span>
+                <div id="out-price" class="text-3xl font-black text-amber-400 my-1">NPR 5,850</div>
+                <p class="text-[10px] text-slate-500 mb-3">*Based on NPR 125/kg raw steel base + hardware & powder coating</p>
+
+                <button onclick="sendWhatsAppQuote()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 transition shadow-lg">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                    <span>Get Instant WhatsApp Quote</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateRack() {
+    const heightFt = parseFloat(document.getElementById('calc-height').value);
+    const lengthFt = parseFloat(document.getElementById('calc-length').value);
+    const depthInches = parseFloat(document.getElementById('calc-depth').value);
+    const angleMm = parseFloat(document.getElementById('calc-angle').value);
+    const sheetMm = parseFloat(document.getElementById('calc-sheet').value);
+    const numShelves = parseInt(document.getElementById('calc-shelves').value);
+    const qty = parseInt(document.getElementById('calc-qty').value);
+
+    // 1. Clearance / Gap Calculation
+    const totalHeightInches = heightFt * 12;
+    const shelfThicknessInches = 1; // 1 inch thickness per shelf panel
+    const totalPanelThickness = numShelves * shelfThicknessInches;
+    const usableHeight = totalHeightInches - totalPanelThickness;
+    const gapsCount = numShelves > 1 ? numShelves - 1 : 1;
+    const netGapInches = (usableHeight / gapsCount).toFixed(2);
+    document.getElementById('out-gap').innerText = `${netGapInches}" (${(netGapInches * 2.54).toFixed(1)} cm) / Gap`;
+
+    // 2. Load Capacity Calibration (15" Depth Baseline Adjustment)
+    const baseCapacities = {
+        0.50: 40,
+        0.60: 70,
+        0.70: 90,
+        0.80: 120,
+        0.90: 150,
+        1.00: 200,
+        1.20: 250
+    };
+    let baseLoad = baseCapacities[sheetMm] || 100;
+    // Depth scaling factor: depth < 15" holds more weight, depth > 15" holds proportionally less
+    const depthFactor = 15 / depthInches;
+    const adjustedLoad = Math.round(baseLoad * depthFactor);
+    document.getElementById('out-load').innerText = `${adjustedLoad} kg / shelf`;
+
+    // 3. Weight Estimation Calculation (Raw Steel Weight in Kg)
+    // Steel Density constant & surface area math
+    const totalAngleFt = 4 * heightFt; 
+    const angleWeightPerFt = (angleMm / 2.0) * 0.75; // Approx weight factor for 1.5x1.5 angle
+    const totalAngleWeight = totalAngleFt * angleWeightPerFt;
+
+    const shelfAreaSqFt = (lengthFt * (depthInches / 12));
+    const sheetWeightPerSqFt = sheetMm * 7.85 * 0.0929; // mm * density factor
+    const totalSheetWeight = numShelves * shelfAreaSqFt * sheetWeightPerSqFt * 1.35; // including bend folds
+    const totalWeightPerSet = (totalAngleWeight + totalSheetWeight).toFixed(1);
+
+    document.getElementById('out-weight').innerText = `${totalWeightPerSet} kg / set`;
+
+    // 4. Exact Pricing Formula (NPR 125/kg Steel Base + Hardware + Coating labor)
+    const rawMaterialRatePerKg = 125; 
+    const baseSteelCost = totalWeightPerSet * rawMaterialRatePerKg;
+    const nutBoltsCornerBracesCost = numShelves * 140; 
+    const powderCoatingLaborCost = totalWeightPerSet * 35;
+
+    let costPerSet = baseSteelCost + nutBoltsCornerBracesCost + powderCoatingLaborCost;
+    
+    // Adjust 6.5ft Std Angle Baseline
+    if(heightFt === 6.5) {
+        costPerSet += 100; 
+    }
+
+    let totalCost = costPerSet * qty;
+
+    // Multi-set Volume Discount
+    const discountBanner = document.getElementById('discount-banner');
+    if(qty >= 10) {
+        totalCost *= 0.92; // 8% Discount
+        discountBanner.classList.remove('hidden');
+    } else if(qty >= 5) {
+        totalCost *= 0.95; // 5% Discount
+        discountBanner.classList.remove('hidden');
+    } else {
+        discountBanner.classList.add('hidden');
+    }
+
+    document.getElementById('out-price').innerText = `NPR ${Math.round(totalCost).toLocaleString('en-IN')}`;
+}
+
+function sendWhatsAppQuote() {
+    const heightFt = document.getElementById('calc-height').value;
+    const lengthFt = document.getElementById('calc-length').value;
+    const depthInches = document.getElementById('calc-depth').value;
+    const angleMm = document.getElementById('calc-angle').value;
+    const sheetMm = document.getElementById('calc-sheet').value;
+    const numShelves = document.getElementById('calc-shelves').value;
+    const qty = document.getElementById('calc-qty').value;
+    const price = document.getElementById('out-price').innerText;
+    const load = document.getElementById('out-load').innerText;
+    const gap = document.getElementById('out-gap').innerText;
+
+    const message = `*STEELFIT INFRASTRUCTURE - CUSTOM RACK QUOTE*%0A` +
+        `_(Unit of Azad Metal Engineering, Balkhu)_%0A%0A` +
+        `*Rack Size:* ${heightFt}ft (H) x ${lengthFt}ft (L) x ${depthInches}" (Depth)%0A` +
+        `*Shelves Count:* ${numShelves} Levels%0A` +
+        `*Net Gap Clearance:* ${gap}%0A` +
+        `*Angle Thickness:* ${angleMm} mm%0A` +
+        `*Sheet Thickness:* ${sheetMm} mm%0A` +
+        `*Load Capacity:* ${load}%0A` +
+        `*Quantity:* ${qty} Set(s)%0A` +
+        `*Calculated Price:* ${price}%0A%0A` +
+        `Please confirm availability & delivery timeline to Kathmandu Valley.`;
+
+    window.open(`https://wa.me/9779843653731?text=${message}`, '_blank');
+}
+
+// Initial calculation on load
+document.addEventListener("DOMContentLoaded", calculateRack);
+                                                                        </script>
+    
     <!-- Why Choose Us -->
     <section id="about" class="py-12 max-w-7xl mx-auto px-4">
         <h3 class="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-8">Why SteelFit Slotted Angle Racks?</h3>

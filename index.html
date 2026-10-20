@@ -77,7 +77,8 @@
             </div>
         </div>
     </section>
-<!-- SteelFit Infrastructure - Precision Slotted Angle Rack & Load Calculator -->
+    
+    <!-- SteelFit Infrastructure - Precision Slotted Angle Rack & Load Calculator -->
 <div id="steelfit-calculator" class="bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto my-8 border border-slate-700">
     <div class="text-center mb-6">
         <span class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">Factory Direct Calculator</span>
@@ -152,6 +153,14 @@
                     <input id="calc-qty" type="number" min="1" max="100" value="1" onchange="calculateRack()" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-center text-white font-bold focus:outline-none">
                 </div>
             </div>
+
+            <!-- Bottom Protection & Floor Option -->
+            <div class="pt-2 border-t border-slate-700">
+                <label class="flex items-center space-x-2 text-xs text-amber-300 font-medium cursor-pointer">
+                    <input id="calc-bottom-gap" type="checkbox" checked onchange="calculateRack()" class="rounded bg-slate-900 border-slate-600 text-amber-500 focus:ring-0">
+                    <span>Include 3" Bottom Clearance (Anti-Rust/Dust Protection)</span>
+                </label>
+            </div>
         </div>
 
         <!-- Output Display Right -->
@@ -159,10 +168,20 @@
             <div>
                 <h3 class="text-sm font-bold text-slate-300 border-b border-slate-700 pb-2 mb-3">Calculated Specifications & Clearance</h3>
                 
-                <div class="space-y-3 text-xs md:text-sm">
+                <div class="space-y-2.5 text-xs md:text-sm">
                     <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
-                        <span class="text-slate-400">Net Gap between Shelves:</span>
-                        <span id="out-gap" class="font-bold text-amber-400">13.25 Inches / Gap</span>
+                        <span class="text-slate-400">Net Shelf-to-Shelf Gap:</span>
+                        <span id="out-gap" class="font-bold text-amber-400">12.50" (31.7 cm) / Gap</span>
+                    </div>
+
+                    <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Bottom Rust/Dust Gap:</span>
+                        <span id="out-bottom" class="font-bold text-blue-400">3.0" (7.6 cm) Floor Clearance</span>
+                    </div>
+
+                    <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
+                        <span class="text-slate-400">Total Storage Levels:</span>
+                        <span id="out-levels" class="font-bold text-amber-300">5 Shelves + 1 Floor Level (6 Total)</span>
                     </div>
 
                     <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
@@ -172,7 +191,7 @@
 
                     <div class="flex justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-700">
                         <span class="text-slate-400">Approx. Steel Weight:</span>
-                        <span id="out-weight" class="font-bold text-slate-200">32.5 kg / set</span>
+                        <span id="out-weight" class="font-bold text-slate-200">30.4 kg / set</span>
                     </div>
 
                     <div id="discount-banner" class="hidden text-center bg-emerald-900/50 text-emerald-300 text-xs py-1.5 rounded-lg border border-emerald-700/50">
@@ -183,7 +202,7 @@
 
             <div class="mt-4 pt-3 border-t border-slate-700 text-center">
                 <span class="text-xs text-slate-400 uppercase tracking-wider">Estimated Factory Cost</span>
-                <div id="out-price" class="text-3xl font-black text-amber-400 my-1">NPR 5,850</div>
+                <div id="out-price" class="text-3xl font-black text-amber-400 my-1">NPR 5,664</div>
                 <p class="text-[10px] text-slate-500 mb-3">*Based on NPR 125/kg raw steel base + hardware & powder coating</p>
 
                 <button onclick="sendWhatsAppQuote()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 transition shadow-lg">
@@ -204,15 +223,22 @@ function calculateRack() {
     const sheetMm = parseFloat(document.getElementById('calc-sheet').value);
     const numShelves = parseInt(document.getElementById('calc-shelves').value);
     const qty = parseInt(document.getElementById('calc-qty').value);
+    const hasBottomGap = document.getElementById('calc-bottom-gap').checked;
 
-    // 1. Clearance / Gap Calculation
+    // 1. Bottom Gap & Net Clearance Calculation
     const totalHeightInches = heightFt * 12;
+    const bottomGapInches = hasBottomGap ? 3 : 0;
     const shelfThicknessInches = 1; // 1 inch thickness per shelf panel
     const totalPanelThickness = numShelves * shelfThicknessInches;
-    const usableHeight = totalHeightInches - totalPanelThickness;
+    
+    // Usable height after deducting bottom rust clearance and shelf panel thicknesses
+    const usableHeight = totalHeightInches - bottomGapInches - totalPanelThickness;
     const gapsCount = numShelves > 1 ? numShelves - 1 : 1;
     const netGapInches = (usableHeight / gapsCount).toFixed(2);
+
     document.getElementById('out-gap').innerText = `${netGapInches}" (${(netGapInches * 2.54).toFixed(1)} cm) / Gap`;
+    document.getElementById('out-bottom').innerText = hasBottomGap ? `3.0" (7.6 cm) Anti-Rust Gap` : `None (0")`;
+    document.getElementById('out-levels').innerText = `${numShelves} Shelves + 1 Floor Level (${numShelves + 1} Total)`;
 
     // 2. Load Capacity Calibration (15" Depth Baseline Adjustment)
     const baseCapacities = {
@@ -225,25 +251,23 @@ function calculateRack() {
         1.20: 250
     };
     let baseLoad = baseCapacities[sheetMm] || 100;
-    // Depth scaling factor: depth < 15" holds more weight, depth > 15" holds proportionally less
     const depthFactor = 15 / depthInches;
     const adjustedLoad = Math.round(baseLoad * depthFactor);
     document.getElementById('out-load').innerText = `${adjustedLoad} kg / shelf`;
 
     // 3. Weight Estimation Calculation (Raw Steel Weight in Kg)
-    // Steel Density constant & surface area math
     const totalAngleFt = 4 * heightFt; 
-    const angleWeightPerFt = (angleMm / 2.0) * 0.75; // Approx weight factor for 1.5x1.5 angle
+    const angleWeightPerFt = (angleMm / 2.0) * 0.75; 
     const totalAngleWeight = totalAngleFt * angleWeightPerFt;
 
     const shelfAreaSqFt = (lengthFt * (depthInches / 12));
-    const sheetWeightPerSqFt = sheetMm * 7.85 * 0.0929; // mm * density factor
-    const totalSheetWeight = numShelves * shelfAreaSqFt * sheetWeightPerSqFt * 1.35; // including bend folds
+    const sheetWeightPerSqFt = sheetMm * 7.85 * 0.0929; 
+    const totalSheetWeight = numShelves * shelfAreaSqFt * sheetWeightPerSqFt * 1.35; 
     const totalWeightPerSet = (totalAngleWeight + totalSheetWeight).toFixed(1);
 
     document.getElementById('out-weight').innerText = `${totalWeightPerSet} kg / set`;
 
-    // 4. Exact Pricing Formula (NPR 125/kg Steel Base + Hardware + Coating labor)
+    // 4. Pricing Formula
     const rawMaterialRatePerKg = 125; 
     const baseSteelCost = totalWeightPerSet * rawMaterialRatePerKg;
     const nutBoltsCornerBracesCost = numShelves * 140; 
@@ -251,20 +275,18 @@ function calculateRack() {
 
     let costPerSet = baseSteelCost + nutBoltsCornerBracesCost + powderCoatingLaborCost;
     
-    // Adjust 6.5ft Std Angle Baseline
     if(heightFt === 6.5) {
         costPerSet += 100; 
     }
 
     let totalCost = costPerSet * qty;
 
-    // Multi-set Volume Discount
     const discountBanner = document.getElementById('discount-banner');
     if(qty >= 10) {
-        totalCost *= 0.92; // 8% Discount
+        totalCost *= 0.92; 
         discountBanner.classList.remove('hidden');
     } else if(qty >= 5) {
-        totalCost *= 0.95; // 5% Discount
+        totalCost *= 0.95; 
         discountBanner.classList.remove('hidden');
     } else {
         discountBanner.classList.add('hidden');
@@ -281,6 +303,7 @@ function sendWhatsAppQuote() {
     const sheetMm = document.getElementById('calc-sheet').value;
     const numShelves = document.getElementById('calc-shelves').value;
     const qty = document.getElementById('calc-qty').value;
+    const hasBottomGap = document.getElementById('calc-bottom-gap').checked;
     const price = document.getElementById('out-price').innerText;
     const load = document.getElementById('out-load').innerText;
     const gap = document.getElementById('out-gap').innerText;
@@ -288,7 +311,8 @@ function sendWhatsAppQuote() {
     const message = `*STEELFIT INFRASTRUCTURE - CUSTOM RACK QUOTE*%0A` +
         `_(Unit of Azad Metal Engineering, Balkhu)_%0A%0A` +
         `*Rack Size:* ${heightFt}ft (H) x ${lengthFt}ft (L) x ${depthInches}" (Depth)%0A` +
-        `*Shelves Count:* ${numShelves} Levels%0A` +
+        `*Shelves Count:* ${numShelves} Metal Panels + 1 Floor Level%0A` +
+        `*Bottom Protection Gap:* ${hasBottomGap ? '3 Inch Anti-Rust Clearance' : '0 Inch'}%0A` +
         `*Net Gap Clearance:* ${gap}%0A` +
         `*Angle Thickness:* ${angleMm} mm%0A` +
         `*Sheet Thickness:* ${sheetMm} mm%0A` +
@@ -300,10 +324,9 @@ function sendWhatsAppQuote() {
     window.open(`https://wa.me/9779843653731?text=${message}`, '_blank');
 }
 
-// Initial calculation on load
 document.addEventListener("DOMContentLoaded", calculateRack);
-                                                                        </script>
-    
+</script>
+
     <!-- Why Choose Us -->
     <section id="about" class="py-12 max-w-7xl mx-auto px-4">
         <h3 class="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-8">Why SteelFit Slotted Angle Racks?</h3>

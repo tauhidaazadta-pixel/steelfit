@@ -77,6 +77,41 @@
             </div>
         </div>
     </section>
+   <!-- SteelFit 3D Interactive Rack Preview Section -->
+<div class="max-w-4xl mx-auto my-6 p-5 bg-slate-900 rounded-2xl border border-slate-700 shadow-xl text-center text-white">
+    <div class="mb-3">
+        <span class="bg-blue-600 text-white font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider">Live 3D Model Preview</span>
+        <h3 class="text-xl font-bold text-amber-400 mt-2">Visualizing Your Custom Storage Rack</h3>
+        <p class="text-xs text-slate-400">Interactive structural representation based on your selected height & shelves.</p>
+    </div>
+
+    <!-- 3D CSS Simulated Rack Container -->
+    <div class="relative w-full h-64 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center overflow-hidden p-4">
+        <!-- Ambient Grid Background -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30"></div>
+
+        <!-- 3D Perspective Stage -->
+        <div class="perspective-container relative w-48 h-52 flex flex-col justify-between items-center transform rotate-x-6 rotate-y-12 transition-all duration-500 hover:rotate-y-0" style="transform-style: preserve-3d;">
+            
+            <!-- Vertical Angle Pillars (4 corners) -->
+            <div class="absolute left-0 top-0 w-2 h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded shadow-md"></div>
+            <div class="absolute right-0 top-0 w-2 h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded shadow-md"></div>
+
+            <!-- Dynamic Shelves Stack -->
+            <div class="w-full h-3 bg-slate-300 rounded border border-slate-400 shadow-lg transform translate-z-4"></div>
+            <div class="w-full h-3 bg-slate-300 rounded border border-slate-400 shadow-lg transform translate-z-4"></div>
+            <div class="w-full h-3 bg-slate-300 rounded border border-slate-400 shadow-lg transform translate-z-4"></div>
+            <div class="w-full h-3 bg-slate-300 rounded border border-slate-400 shadow-lg transform translate-z-4"></div>
+            <div class="w-full h-3 bg-slate-300 rounded border border-slate-400 shadow-lg transform translate-z-4"></div>
+
+        </div>
+    </div>
+
+    <div class="mt-3 text-xs text-slate-400 flex justify-center items-center space-x-4">
+        <span class="flex items-center"><span class="w-2 h-2 bg-amber-500 rounded-full mr-1.5 animate-ping"></span> Heavy MS Steel Angles</span>
+        <span class="flex items-center"><span class="w-2 h-2 bg-slate-300 rounded-full mr-1.5"></span> Powder Coated CR Shelves</span>
+    </div>
+</div>
     
     <!-- SteelFit Infrastructure - Precision Slotted Angle Rack & Load Calculator -->
 <div id="steelfit-calculator" class="bg-slate-900 text-white p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto my-8 border border-slate-700">

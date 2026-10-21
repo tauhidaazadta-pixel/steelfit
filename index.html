@@ -626,6 +626,63 @@ document.addEventListener("DOMContentLoaded", calculateRack);
 </div>
 
     </footer>
+<!-- SteelFit AI Smart Chat Assistant Widget -->
+<div id="ai-chat-widget" class="fixed bottom-20 right-4 z-50">
+    <!-- Chat Toggle Button -->
+    <button onclick="toggleAIChat()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center space-x-2 transition transform hover:scale-105 border-2 border-slate-900">
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98.97 4.29L1 23l6.71-1.97c1.31.61 2.75.97 4.29.97 5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.33 0-2.58-.33-3.68-.91l-.26-.14-3.15.93.94-3.07-.15-.27C5.33 14.58 5 13.32 5 12c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7z"/></svg>
+        <span class="text-xs font-bold hidden md:inline">Ask AI Assistant 💬</span>
+    </button>
 
+    <!-- Chat Box Window (Hidden by Default) -->
+    <div id="ai-chat-box" class="hidden absolute bottom-16 right-0 w-80 bg-slate-900 text-white rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-slate-800 p-3 border-b border-slate-700 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span class="text-xs font-bold text-amber-400">SteelFit AI Assistant</span>
+            </div>
+            <button onclick="toggleAIChat()" class="text-slate-400 hover:text-white text-sm font-bold px-1">✕</button>
+        </div>
+
+        <!-- Chat Body -->
+        <div class="p-3 space-y-3 text-xs max-h-64 overflow-y-auto bg-slate-950/50">
+            <div class="bg-slate-800 p-2.5 rounded-xl rounded-tl-none border border-slate-700 text-slate-300">
+                नमस्ते! 🙏 मैं SteelFit Infrastructure (बाल्खु) का वर्चुअल असिस्टेंट हूँ। स्लॉटेड एंगल रैक्स या प्राइस के बारे में क्या जानना चाहते हैं?
+            </div>
+
+            <!-- Quick Action Options -->
+            <div class="space-y-1.5 pt-1">
+                <button onclick="sendAIQuery('📍 Where is your factory located?')" class="w-full text-left bg-slate-800 hover:bg-slate-700 text-amber-300 p-2 rounded-lg border border-slate-700 transition">
+                    📍 Factory Location कहाँ है?
+                </button>
+                <button onclick="sendAIQuery('⚖️ What is the load capacity of your racks?')" class="w-full text-left bg-slate-800 hover:bg-slate-700 text-emerald-300 p-2 rounded-lg border border-slate-700 transition">
+                    ⚖️ Racks की Load Capacity क्या है?
+                </button>
+                <button onclick="sendAIQuery('📞 I want to talk directly regarding a custom bulk order quotation.')" class="w-full text-left bg-emerald-900/60 hover:bg-emerald-800 text-emerald-200 p-2 rounded-lg border border-emerald-700 transition font-bold">
+                    📞 WhatsApp पर बात करें / Quote लें
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Footer -->
+        <div class="p-2 bg-slate-900 border-t border-slate-800 text-center text-[10px] text-slate-500">
+            Powered by SteelFit Infrastructure AI
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleAIChat() {
+    const box = document.getElementById('ai-chat-box');
+    box.classList.toggle('hidden');
+}
+
+function sendAIQuery(queryText) {
+    const encoded = encodeURIComponent("Hello SteelFit AI, I want to ask: " + queryText);
+    window.open(`https://wa.me/9779843653731?text=${encoded}`, '_blank');
+}
+</script>
+    
 </body>
 </html>
